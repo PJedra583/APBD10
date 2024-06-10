@@ -23,5 +23,6 @@ public class Patient
     public String Lastname { get; set; }
     [Required]
     public DateOnly Birthdate { get; set; }
+    public ICollection<Prescription> Prescriptions { get; set; }
     
 }

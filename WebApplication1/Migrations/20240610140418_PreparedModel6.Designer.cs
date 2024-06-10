@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication1.Context;
 
@@ -11,9 +12,11 @@ using WebApplication1.Context;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(WebAppContext))]
-    partial class WebAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240610140418_PreparedModel6")]
+    partial class PreparedModel6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,13 +271,13 @@ namespace WebApplication1.Migrations
             modelBuilder.Entity("WebApplication1.Models.Prescription", b =>
                 {
                     b.HasOne("WebApplication1.Models.Doctor", "Doctor")
-                        .WithMany("Prescriptions")
+                        .WithMany()
                         .HasForeignKey("IdDoctor")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebApplication1.Models.Patient", "Patient")
-                        .WithMany("Prescriptions")
+                        .WithMany()
                         .HasForeignKey("IdPatient")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -286,31 +289,11 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("WebApplication1.Models.Prescription_Medicament", b =>
                 {
-                    b.HasOne("WebApplication1.Models.Medicament", "Medicament")
-                        .WithMany()
-                        .HasForeignKey("IdMedicament")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebApplication1.Models.Prescription", "Prescription")
+                    b.HasOne("WebApplication1.Models.Prescription", null)
                         .WithMany("Prescription_Medicaments")
                         .HasForeignKey("IdPrescription")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Medicament");
-
-                    b.Navigation("Prescription");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.Doctor", b =>
-                {
-                    b.Navigation("Prescriptions");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.Patient", b =>
-                {
-                    b.Navigation("Prescriptions");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Prescription", b =>

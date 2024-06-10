@@ -49,7 +49,8 @@ public class Controller : ControllerBase
         if (!await _dbService.DoesPatientExist(idPatient))
         {
             return NotFound("Patient not found");
-        } 
+        }
         
+        return Ok(await _dbService.GetPatientInfo(idPatient));
     }
 }
