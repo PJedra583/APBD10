@@ -46,35 +46,41 @@ public class DbService : IDbService
     public async Task<GetPatientInfo> GetPatientInfo(int idPatient)
     {
         GetPatientInfo returnPatient = new GetPatientInfo();
-        var patient = await _context.Patients.FirstOrDefaultAsync(e=> e.IdPatient == idPatient);
+        var patient = await _context.Patients.FirstOrDefaultAsync(e => e.IdPatient == idPatient);
         returnPatient.IdPatient = patient.IdPatient;
         returnPatient.FirstName = patient.Firstname;
         returnPatient.LastName = patient.Lastname;
         returnPatient.Birthdate = patient.Birthdate;
+
         var prescriptions = await _context.Prescriptions
             .Where(e => e.IdPatient == idPatient)
             .OrderBy(e => e.DueDate)
             .ToListAsync();
-
-        returnPatient.Prescriptions = prescriptions.Select(e => new GetPrescriptionInfo()
+        
+        foreach (var prescription in prescriptions)
         {
-            IdPrescription = e.IdPrescription,
-            Date = e.Date,
-            DueDate = e.DueDate,
-            Medicaments = _context.Prescription_Medicaments
-                .Where(pm => pm.IdPrescription == e.IdPrescription)
-                .Select(pm => pm.Medicament)
-                .ToList(),
-            Doctor = _context.Prescriptions
-                .Where(p => p.IdPrescription == e.IdPrescription)
-                .Select(e3 => new GetDoctorInfo()
-                {
-                    FirstName = e3.Doctor.FirstName,
-                    IdDoctor = e3.IdDoctor
-                })
-                .FirstOrDefault()
-        }).ToList();
+            var prescriptionInfo = new GetPrescriptionInfo()
+            {
+                IdPrescription = prescription.IdPrescription,
+                Date = prescription.Date,
+                DueDate = prescription.DueDate,
+                Medicaments = await _context.Prescription_Medicaments
+                    .Where(pm => pm.IdPrescription == prescription.IdPrescription)
+                    .Select(pm => pm.Medicament)
+                    .ToListAsync(),
+                Doctor = await _context.Prescriptions
+                    .Where(p => p.IdPrescription == prescription.IdPrescription)
+                    .Select(e3 => new GetDoctorInfo()
+                    {
+                        FirstName = e3.Doctor.FirstName,
+                        IdDoctor = e3.IdDoctor
+                    })
+                    .FirstOrDefaultAsync()
+            };
+            returnPatient.Prescriptions.Add(prescriptionInfo);
+        }
 
         return returnPatient; 
     }
+
 }

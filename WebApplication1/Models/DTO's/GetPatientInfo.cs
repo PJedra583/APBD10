@@ -18,7 +18,7 @@ public class GetPrescriptionInfo
     public DateOnly Date { get; set; }
     public DateOnly DueDate { get; set; }
     public List<Medicament> Medicaments { get; set; } = new List<Medicament>();
-    public GetDoctorInfo Doctor { get; set; }
+    public GetDoctorInfo? Doctor { get; set; }
 }
 
 public class GetDoctorInfo
